@@ -4,30 +4,32 @@ interface WindowProps extends AppProps {
   App: React.ComponentType<AppProps>;
   Controls?: React.ComponentType<AppProps>;
   Title?: React.ComponentType<AppProps>;
+  __meta__: any;
 }
 
 export class Window extends React.Component<
   WindowProps,
-  { error: Error | null; count: number }
+  { error: Error | null }
 > {
   constructor(props: WindowProps) {
     super(props);
 
     this.state = {
       error: null,
-      count: 0,
+      // count: 0,
     };
   }
 
-  componentDidCatch(error: Error) {
-    this.setState({ error });
+  static getDerivedStateFromError(error: Error) {
+    console.log(error.name);
+    return { error };
   }
 
   render() {
     const {
       App,
       Controls = () => null,
-      Title = () => null,
+      Title = () => this.props.__meta__.name,
       ...props
     } = this.props;
 
@@ -39,9 +41,15 @@ export class Window extends React.Component<
         <AppTitlebar>
           <Title {...props} />
         </AppTitlebar>
-        <React.Suspense fallback={'LOADING...'}>
-          <App {...props} />
-        </React.Suspense>
+        {this.state.error ? (
+          <div className="absolute inset-0 bg-red-100 text-red-900 text-xl items-center justify-center flex">
+            ERROR: {this.state.error.name}
+          </div>
+        ) : (
+          <React.Suspense fallback={'LOADING...'}>
+            <App {...props} />
+          </React.Suspense>
+        )}
         <AppControls>
           <Controls {...props} />
         </AppControls>

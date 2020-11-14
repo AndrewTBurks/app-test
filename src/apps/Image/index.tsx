@@ -1,6 +1,10 @@
 import React from 'react';
 
-const Title = () => <>Image Viewer</>;
+const meta = {
+  name: 'Image Viewer App',
+};
+
+// const Title = () => <>Image Viewer</>;
 
 const Controls = () => (
   <>
@@ -17,6 +21,8 @@ const App = React.lazy(() => import('./content'));
 
 export default {
   App,
-  Title,
+  // Title,
   Controls,
+
+  __meta__: meta,
 };
